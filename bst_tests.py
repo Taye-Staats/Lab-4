@@ -42,6 +42,7 @@ class BSTTests(unittest.TestCase):
         bst4 : BinarySearchTree = BinarySearchTree(lambda a,b: a<b, Node(5, Node(2, Node(1, None, None), None), Node(10, None, None)))
         bst5 : BinarySearchTree = BinarySearchTree(lambda a,b: a<b, Node("a", None, None)) 
         bst6 : BinarySearchTree = BinarySearchTree(lambda a,b: a<b, Node("a", None, Node("b", None, None))) 
+        bst7 : BinarySearchTree = BinarySearchTree(lambda a,b: a<b, Node(Point2(1,1), None, None)) 
         self.assertEqual(lookup(bst, 1), True)
         self.assertEqual(lookup(bst2, 2), False)
         self.assertEqual(lookup(bst3, 3), False)
@@ -51,5 +52,30 @@ class BSTTests(unittest.TestCase):
         self.assertEqual(lookup(bst5, "a"), True)
         self.assertEqual(lookup(bst5, "b"), False)
         self.assertEqual(lookup(bst6, "b"), True)
+        self.assertEqual(lookup(bst7, Point2(1,1)), True)
+
+        # Testing delete
+    def test_delete(self):
+        cmp = lambda a,b: a<b
+        bst : BinarySearchTree = BinarySearchTree(cmp, Node(1, None, None)) 
+        bstA : BinarySearchTree = BinarySearchTree(cmp, None) 
+        bst2 : BinarySearchTree = BinarySearchTree(cmp, Node(1, None , Node(2, None, None))) 
+        bst2A :  BinarySearchTree = BinarySearchTree(cmp, Node(2, None, None))
+        bst3 : BinarySearchTree = BinarySearchTree(cmp, Node("a", None, None)) 
+        bst4 : BinarySearchTree = BinarySearchTree(cmp, Node("a", None, Node("b", None, None))) 
+        bst4A : BinarySearchTree = BinarySearchTree(cmp, Node("b", None, None))
+        bst5  : BinarySearchTree = BinarySearchTree(cmp, Node(Point2(1,1), None, None))
+        bst6  : BinarySearchTree = BinarySearchTree(cmp, Node(Point2(1,1), None, Node(Point2(5,10), None, None)))
+        bst6A  : BinarySearchTree = BinarySearchTree(cmp, Node(Point2(5,10), None, None))
+                                                    
+        self.assertEqual(delete(bst, 1), bstA)
+        self.assertEqual(delete(bst2, 1), bst2A)
+        self.assertEqual(delete(bst3, "a"), bstA)
+        self.assertEqual(delete(bst4, "a"), bst4A)
+        self.assertEqual(delete(bst5, Point2(1,1)), bstA)
+        self.assertEqual(delete(bst6, Point2(1,1)), bst6A)
+
+
+        
 if (__name__ == '__main__'): 
     unittest.main()

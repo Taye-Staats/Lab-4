@@ -66,4 +66,47 @@ def lookup(bst : BinarySearchTree, val : Any) -> bool:
     else:
         return lookup(BinarySearchTree(bst.comes_before, bst.tree.right), val)
 
-
+# If value exists in the tree remove it and preserve the BST properties
+def delete(bst : BinarySearchTree, val : Any) -> BinarySearchTree:
+    match bst.tree:
+        case None:
+            return bst
+        case Node(root, left, right):
+            if root == val:
+                return BinarySearchTree(bst.comes_before, delete_root(bst))
+            elif comes_before(val, root):
+                return delete(BinarySearchTree(bst.comes_before, left), val)
+            else:
+                return delete(BinarySearchTree(bst.comes_before, right),val)
+# Deletes the root
+def delete_root(bst : BinarySearchTree) -> BinTree:
+    match bst.tree:
+        case None:
+            return None
+        case Node(root, left, right):
+            if left is None:
+                return right
+            else:
+                left_max : int = highest_value( left )
+                new_left_subtree : Node = delete_highest_value(left)
+                return Node(left_max, new_left_subtree, right)
+# Returns the highest value in a tree
+def highest_value(bst : BinTree) -> int:
+    match bst:
+        case None:
+            raise ValueError( "Called on empty bst." )
+        case Node(root, left, right):
+            if right is None:
+                return root
+            else:
+                return highest_value(right)
+# Deletes the hgihest value in a tree
+def delete_highest_value(bst : BinTree) -> BinTree:
+    match bst:
+        case None:
+            raise ValueError( "Called on empty bst." )
+        case Node(root, left, right):
+            if right is None:
+                return left
+            else:
+                return delete_highest_value(root, left, delete_highest_value(right))

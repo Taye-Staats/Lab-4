@@ -74,7 +74,22 @@ class BSTTests(unittest.TestCase):
         self.assertEqual(delete(bst4, "a"), bst4A)
         self.assertEqual(delete(bst5, Point2(1,1)), bstA)
         self.assertEqual(delete(bst6, Point2(1,1)), bst6A)
-
+    def test_random_tree(self):
+        start = time.perf_counter()
+        tree = random_tree(106000)
+        height2 = height(tree.tree)
+        end = time.perf_counter()
+        duration = end - start
+        print(f"{duration:.6f} seconds")
+        #plot_height_vs_size(500)
+    def test_runtime(self):
+        total_time = 0
+        start = time.perf_counter()
+        average_insert_time(70)
+        end = time.perf_counter()
+        total_time += (end - start)
+        print(f"Insert runtime for 2000 nodes: {total_time:.6f} seconds")
+        plot_insert_time_vs_size(70)
 
         
 if (__name__ == '__main__'): 

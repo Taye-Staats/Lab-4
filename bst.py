@@ -3,6 +3,11 @@ import unittest
 from typing import * 
 from dataclasses import dataclass 
 import math
+import random
+import time
+import matplotlib.pyplot as plt
+import numpy as np
+
 sys.setrecursionlimit(10**6)
 
 # Data defention for BinTree
@@ -40,7 +45,7 @@ def insert(bst : BinarySearchTree, val : Any) -> BinarySearchTree:
 def insert_helper(bst : BinarySearchTree, val : Any) -> BinTree:
     match bst.tree:
         case None:
-            return  Node(val, None, None)
+            return Node(val, None, None)
         case Node(root, left, right):
             if root == val:
                 return bst.tree
@@ -109,4 +114,63 @@ def delete_highest_value(bst : BinTree) -> BinTree:
             if right is None:
                 return left
             else:
-                return delete_highest_value(root, left, delete_highest_value(right))
+                return Node(root, left, delete_highest_value(right))
+
+TREES_PER_RUN = 10000
+# Generate's a binary search tree of num nodes
+def random_tree(num : int) -> BinarySearchTree:
+    tree : BinarySearchTree = BinarySearchTree(comes_before, None)
+    for i in range(num):
+        tree = insert(tree, random.random())
+    return tree
+
+def height(t : BinTree) -> int:
+    if t is None:
+        return 0
+    left_b = height(t.left)
+    right_b = height(t.right)
+    if(right_b > left_b):
+        return 1 + right_b
+    return 1 + left_b
+
+def average_height(n: int) -> float:
+    total = 0
+    for _ in range(TREES_PER_RUN):
+        tree = random_tree(n)
+        total += height(tree.tree)
+    return total / TREES_PER_RUN
+
+def plot_height_vs_size(n_max: int):
+    Ns = np.linspace(0, n_max, 50, dtype=int)
+    heights = [average_height(n) for n in Ns]
+
+    plt.plot(Ns, heights)
+    plt.xlabel("Tree Size (N)")
+    plt.ylabel("Average Height")
+    plt.title("Average BST Height vs. Tree Size")
+    plt.grid(True)
+    plt.show()
+
+def average_insert_time(n: int) -> float:
+    total_time = 0
+    for _ in range(TREES_PER_RUN):
+        tree = random_tree(n)
+        val = random.random()
+        start = time.perf_counter()
+        insert(tree, val)
+        end = time.perf_counter()
+        total_time += (end - start)
+    return (total_time / TREES_PER_RUN) * float(1e6)
+
+def plot_insert_time_vs_size(n_max: int):
+    Ns = np.linspace(0, n_max, 50, dtype=int)
+    times = [average_insert_time(n) for n in Ns]
+
+    plt.plot(Ns, times)
+    plt.xlabel("Tree Size (N)")
+    plt.ylabel("Avg Insert Time (μs)")
+    plt.title("Average Insert Time vs. Tree Size (BST)")
+    plt.grid(True)
+    plt.tight_layout()
+    plt.yscale('log')
+    plt.show()
